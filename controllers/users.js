@@ -47,7 +47,42 @@ export const getUser = async (req, res, next) => {
     res.status(500).json(err);
   }
 };
+export const followUser = async (req, res, next) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (!user.followers.includes(req.body.userId)) {
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { following: req.body.userId } });
+        res.status(200).json("user has been followed!");
+      } else {
+        res.status(403).json("already following!");
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("Unable to follow your self");
+  }
+};
 
-// export const followUser = async (req, res, next) => {};
-
-// export const unfollowUser = async (res, res, next) => {};
+export const unfollowUser = async (req, res, next) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (user.followers.includes(req.body.userId)) {
+        await user.updateOne({ $pull: { followers: req.body.userId } });
+        await currentUser.updateOne({ $pull: { following: req.body.userId } });
+        res.status(200).json("user has been unfollowed!");
+      } else {
+        res.status(403).json("you dont follow this user");
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("Unable to unfollow your self");
+  }
+};

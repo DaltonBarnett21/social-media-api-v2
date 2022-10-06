@@ -35,7 +35,6 @@ export const login = async (req, res, next) => {
     if (!validPassword) {
       res.status(400).json("Invalid Password");
     }
-
     res.status(200).json(user);
   } catch (err) {
     new Error(err);
