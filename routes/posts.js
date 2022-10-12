@@ -19,6 +19,6 @@ router.put("/:id/like", likePost);
 
 router.get("/:id", getPost);
 
-router.post("/timeline/userFeed", getTimelinePosts);
+router.get("/timeline/:userId", getTimelinePosts);
 
 export default router;

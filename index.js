@@ -6,6 +6,7 @@ import morgan from "morgan";
 import userRoute from "./routes/users.js";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
+import cors from "cors";
 
 const app = express();
 dotenv.config();
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }, () => {
   console.log("Connected to Mongodb");
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
