@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 //register
 export const register = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, lastname, firstname } = req.body;
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -11,6 +11,8 @@ export const register = async (req, res, next) => {
 
     const newUser = await new User({
       username: username,
+      lastname: lastname,
+      firstname: firstname,
       email: email,
       password: hashedPassword,
     });

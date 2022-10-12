@@ -9,6 +9,14 @@ const UserSchema = new mongoose.Schema(
       max: 20,
       unique: true,
     },
+    firstname: {
+      type: String,
+      require: true,
+    },
+    lastname: {
+      type: String,
+      require: true,
+    },
     email: {
       type: String,
       required: true,
