@@ -1,5 +1,6 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import Comment from "../models/Comment.js";
 
 //create a post
 export const createPost = async (req, res, next) => {
@@ -78,6 +79,20 @@ export const getTimelinePosts = async (req, res, next) => {
       })
     );
     res.status(200).json(userPosts.concat(...friendPosts));
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+//make comment
+export const commentOnPost = async (req, res, next) => {
+  const comment = new Comment(req.body);
+  try {
+    const newComment = await comment.save();
+    const postUpdated = await Post.update({
+      $push: { comments: newComment._id },
+    });
+    res.status(200).json(postUpdated);
   } catch (err) {
     res.status(500).json(err);
   }
