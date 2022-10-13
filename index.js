@@ -6,6 +6,7 @@ import morgan from "morgan";
 import userRoute from "./routes/users.js";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
+import commentRoute from "./routes/comment.js";
 import cors from "cors";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(morgan("common"));
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
+app.use("/api/comments", commentRoute);
 
 app.listen(5000, () => {
   console.log("Server is running!");

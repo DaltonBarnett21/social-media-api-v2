@@ -83,17 +83,3 @@ export const getTimelinePosts = async (req, res, next) => {
     res.status(500).json(err);
   }
 };
-
-//make comment
-export const commentOnPost = async (req, res, next) => {
-  const comment = new Comment(req.body);
-  try {
-    const newComment = await comment.save();
-    const postUpdated = await Post.update({
-      $push: { comments: newComment._id },
-    });
-    res.status(200).json(postUpdated);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
