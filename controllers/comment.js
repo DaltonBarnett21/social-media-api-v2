@@ -1,5 +1,6 @@
 import Comment from "../models/Comment.js";
 import Post from "../models/Post.js";
+import mongoose from "mongoose";
 
 //make comment
 export const commentOnPost = async (req, res, next) => {
@@ -26,6 +27,24 @@ export const getComments = async (req, res, next) => {
     );
 
     res.status(200).json(commentData.concat(...comments));
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+//delete comment on post
+export const deleteComment = async (req, res, next) => {
+  try {
+    await Comment.findByIdAndDelete(req.body.commentId);
+    await Post.updateOne(
+      { _id: req.params.postId },
+      {
+        $pull: { comments: mongoose.Types.ObjectId(req.body.commentId) },
+      },
+      { new: true }
+    );
+
+    res.status(200).json("deleted post!");
   } catch (err) {
     res.status(500).json(err);
   }
