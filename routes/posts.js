@@ -7,18 +7,19 @@ import {
   likePost,
   updatePost,
 } from "../controllers/posts.js";
+import { verifyUser } from "../verifyTokens/verifyToken.js";
 const router = express.Router();
 
-router.post("/", createPost);
+router.post("/", verifyUser, createPost);
 
-router.put("/:id", updatePost);
+router.put("/:id", verifyUser, updatePost);
 
-router.delete("/:id", deletePost);
+router.delete("/:id", verifyUser, deletePost);
 
-router.put("/:id/like", likePost);
+router.put("/:id/like", verifyUser, likePost);
 
 router.get("/:id", getPost);
 
-router.get("/timeline/:userId", getTimelinePosts);
+router.get("/timeline/:id", verifyUser, getTimelinePosts);
 
 export default router;
