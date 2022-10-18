@@ -59,6 +59,7 @@ export const login = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
       })
+      .cookie("isLoggedIn", "true")
       .status(200)
       .json(details);
   } catch (err) {
