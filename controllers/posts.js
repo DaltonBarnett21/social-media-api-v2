@@ -77,9 +77,9 @@ export const getPost = async (req, res, next) => {
 
 //get timeline posts
 export const getTimelinePosts = async (req, res, next) => {
+  const profilePosts = req.query.profilePosts;
   try {
     const currentUser = await User.findById(req.params.id);
-    console.log(currentUser);
     const userPosts = await Post.find({ userId: currentUser._id });
     for (let userPost of userPosts) {
       if (userPost.img) {
@@ -91,8 +91,14 @@ export const getTimelinePosts = async (req, res, next) => {
         return Post.find({ userId: friendId });
       })
     );
-    res.status(200).json(userPosts.concat(...friendPosts));
+
+    if (profilePosts) {
+      res.status(200).json(userPosts);
+    } else {
+      res.status(200).json(userPosts.concat(...friendPosts));
+    }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
