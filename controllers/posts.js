@@ -80,6 +80,7 @@ export const getTimelinePosts = async (req, res, next) => {
   const profilePosts = req.query.profilePosts;
   try {
     const currentUser = await User.findById(req.params.id);
+
     const userPosts = await Post.find({ userId: currentUser._id });
     for (let userPost of userPosts) {
       if (userPost.img) {

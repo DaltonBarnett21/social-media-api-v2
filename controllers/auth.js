@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { getObjectSignedUrl } from "../s3/s3.js";
 
 //register
 export const register = async (req, res, next) => {
@@ -45,8 +46,12 @@ export const login = async (req, res, next) => {
       firstname: user.firstname,
       lastname: user.lastname,
       username: user.username,
-      profilePicture: user.profilePicture,
-      coverPicture: user.coverPicture,
+      profilePicture: user.profilePicture
+        ? await getObjectSignedUrl(user.profilePicture)
+        : user.profilePicture,
+      coverPicture: user.coverPicture
+        ? await getObjectSignedUrl(user.coverPicture)
+        : user.coverPicture,
     };
 
     console.log(details);
@@ -67,15 +72,19 @@ export const verifyUserToken = (req, res) => {
   jwt.verify(token, process.env.JWT, async (err, user) => {
     if (err) throw err;
 
-    await User.findOne({ _id: user.id });
+    const foundUser = await User.findOne({ _id: user.id });
 
     const details = {
       id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      username: user.username,
-      profilePicture: user.profilePicture,
-      coverPicture: user.coverPicture,
+      firstname: foundUser.firstname,
+      lastname: foundUser.lastname,
+      username: foundUser.username,
+      profilePicture: foundUser.profilePicture
+        ? await getObjectSignedUrl(foundUser.profilePicture)
+        : foundUser.profilePicture,
+      coverPicture: foundUser.coverPicture
+        ? await getObjectSignedUrl(foundUser.coverPicture)
+        : foundUser.coverPicture,
     };
 
     const token = jwt.sign(details, process.env.JWT);

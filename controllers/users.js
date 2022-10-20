@@ -3,26 +3,28 @@ import bcrypt from "bcrypt";
 
 export const updateUser = async (req, res, next) => {
   const { userId } = req.body;
-  if (userId === req.params.id || req.body.isAdmin) {
-    if (req.body.password) {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-      } catch (err) {
-        return res.status(500).json(err);
-      }
-    }
+  // if (userId === req.params.id) {
+  //if user wants to update password
+  if (req.body.password) {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
-        $set: req.body,
-      });
-      res.status(200).json("Account updated!");
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
     } catch (err) {
       return res.status(500).json(err);
     }
-  } else {
-    return res.status(401).json("this is not your account");
   }
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, {
+      $set: req.body,
+    });
+    res.status(200).json("Account updated!");
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+  // } else {
+  //   return res.status(401).json("this is not your account");
+  // }
 };
 
 export const deleteUser = async (req, res, next) => {
