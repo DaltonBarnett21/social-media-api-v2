@@ -42,11 +42,40 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const getUser = async (req, res, next) => {
+  const showFollowers = req.query.showFollowers;
   try {
     const user = await User.findById(req.params.id);
-    const { password, updatedAt, ...others } = user._doc;
-    res.status(200).json(others);
+
+    if (user.profilePicture || user.coverPicture) {
+      user.profilePicture = await getObjectSignedUrl(user.profilePicture);
+      user.coverPicture = await getObjectSignedUrl(user.coverPicture);
+    }
+
+    if (showFollowers) {
+      const followers = await Promise.all(
+        user.followers?.map((followerId) => {
+          console.log(followerId);
+          return User.findById(followerId);
+        })
+      );
+
+      for (let follower of followers) {
+        if (follower.profilePicture || follower.coverPicture) {
+          follower.profilePicture = await getObjectSignedUrl(
+            follower.profilePicture
+          );
+          follower.coverPicture = await getObjectSignedUrl(
+            follower.coverPicture
+          );
+        }
+      }
+      res.status(200).json(followers);
+    } else {
+      const { password, updatedAt, ...others } = user._doc;
+      res.status(200).json(others);
+    }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -93,7 +122,7 @@ export const unfollowUser = async (req, res, next) => {
       const currentUser = await User.findById(req.body.userId);
       if (user.followers.includes(req.body.userId)) {
         await user.updateOne({ $pull: { followers: req.body.userId } });
-        await currentUser.updateOne({ $pull: { following: req.body.userId } });
+        await currentUser.updateOne({ $pull: { following: req.params.id } });
         res.status(200).json("user has been unfollowed!");
       } else {
         res.status(403).json("you dont follow this user");
