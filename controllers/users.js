@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import { getObjectSignedUrl } from "../s3/s3.js";
 
 export const updateUser = async (req, res, next) => {
   const { userId } = req.body;
@@ -49,6 +50,22 @@ export const getUser = async (req, res, next) => {
     res.status(500).json(err);
   }
 };
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    for (let user of users) {
+      if (user.profilePicture) {
+        user.profilePicture = await getObjectSignedUrl(user.profilePicture);
+      }
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
 export const followUser = async (req, res, next) => {
   if (req.body.userId !== req.params.id) {
     try {

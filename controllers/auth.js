@@ -21,6 +21,7 @@ export const register = async (req, res, next) => {
     const user = await newUser.save();
     res.status(200).json(user);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
