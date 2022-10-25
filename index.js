@@ -9,6 +9,7 @@ import postRoute from "./routes/posts.js";
 import commentRoute from "./routes/comment.js";
 import imageRoute from "./routes/image.js";
 import profileRoute from "./routes/profile.js";
+import notificationRoute from "./routes/notification.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -31,6 +32,7 @@ app.use("/api/posts", postRoute);
 app.use("/api/comments", commentRoute);
 app.use("/api/images", imageRoute);
 app.use("/api/profile", profileRoute);
+app.use("/api/notifications", notificationRoute);
 
 app.listen(5000, () => {
   console.log("Server is running!");
