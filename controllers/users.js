@@ -46,15 +46,16 @@ export const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
 
-    if (user.profilePicture || user.coverPicture) {
+    if (user.profilePicture) {
       user.profilePicture = await getObjectSignedUrl(user.profilePicture);
+    }
+    if (user.coverPicture) {
       user.coverPicture = await getObjectSignedUrl(user.coverPicture);
     }
 
     if (showFollowers) {
       const followers = await Promise.all(
-        user.followers?.map((followerId) => {
-          console.log(followerId);
+        user.following?.map((followerId) => {
           return User.findById(followerId);
         })
       );
