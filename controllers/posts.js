@@ -87,16 +87,27 @@ export const getTimelinePosts = async (req, res, next) => {
         userPost.img = await getObjectSignedUrl(userPost.img);
       }
     }
+
+    let signedImages = [];
+
     const friendPosts = await Promise.all(
       currentUser.following.map((friendId) => {
         return Post.find({ userId: friendId });
       })
     );
 
+    for (let friendPost of friendPosts) {
+      for (let post of friendPost) {
+        if (post.img) {
+          post.img = await getObjectSignedUrl(post.img);
+        }
+      }
+    }
+
     if (profilePosts) {
       res.status(200).json(userPosts);
     } else {
-      res.status(200).json(userPosts.concat(...friendPosts));
+      res.status(200).json(userPosts.concat(...friendPosts, ...signedImages));
     }
   } catch (err) {
     console.log(err);
