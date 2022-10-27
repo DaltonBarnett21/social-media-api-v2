@@ -43,6 +43,8 @@ export const deleteUser = async (req, res, next) => {
 
 export const getUser = async (req, res, next) => {
   const showFollowers = req.query.showFollowers;
+  const search = req.query.search;
+
   try {
     const user = await User.findById(req.params.id);
 
@@ -71,6 +73,11 @@ export const getUser = async (req, res, next) => {
         }
       }
       res.status(200).json(followers);
+    } else if (search) {
+      const result = await User.find({
+        firstname: { $regex: search, $options: "i" },
+      });
+      res.status(200).json(result);
     } else {
       const { password, updatedAt, ...others } = user._doc;
       res.status(200).json(others);

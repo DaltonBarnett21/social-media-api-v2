@@ -7,7 +7,7 @@ import {
   likePost,
   updatePost,
 } from "../controllers/posts.js";
-import { verifyUser } from "../jwt/verifyToken.js";
+
 const router = express.Router();
 
 router.post("/:id", createPost);
