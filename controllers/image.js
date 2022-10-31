@@ -13,8 +13,18 @@ export const uploadPostImage = async (req, res) => {
   const file = req.file;
   const desc = req.body.desc;
   const imageName = generateFileName();
+  const postImage = req.query.postImage;
+  let fileBuffer;
 
-  const fileBuffer = await sharp(file.buffer).toBuffer();
+  if (postImage) {
+    fileBuffer = await sharp(file.buffer)
+      .resize({ width: 1000, height: 700 })
+      .toBuffer();
+  } else {
+    fileBuffer = await sharp(file.buffer)
+      .resize({ width: 50, height: 50 })
+      .toBuffer();
+  }
 
   const newPost = new Post({
     userId: req.params.userId,

@@ -10,6 +10,8 @@ import commentRoute from "./routes/comment.js";
 import imageRoute from "./routes/image.js";
 import profileRoute from "./routes/profile.js";
 import notificationRoute from "./routes/notification.js";
+import conversationRoute from "./routes/conversation.js";
+import meesageRoute from "./routes/message.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -33,6 +35,8 @@ app.use("/api/comments", commentRoute);
 app.use("/api/images", imageRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/notifications", notificationRoute);
+app.use("/api/conversations", conversationRoute);
+app.use("/api/messages", meesageRoute);
 
 app.listen(5000, () => {
   console.log("Server is running!");
